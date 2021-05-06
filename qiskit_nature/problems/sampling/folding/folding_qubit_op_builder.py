@@ -161,7 +161,7 @@ def _create_indic_turn(N, side_chain, qubits):
     # indic_1 = np.zeros((num_turns, 2), dtype=object)
     # indic_2 = np.zeros((num_turns, 2), dtype=object)
     # indic_3 = np.zeros((num_turns, 2), dtype=object)
-    # r_conf = 0
+    r_conf = 0
     for i in range(1, N):   # There are N-1 turns starting at turn 1
     # for i in range(num_turns):
         for m in range(2):
@@ -514,9 +514,8 @@ def _create_contact_qubits(N, pauli_contacts):
 def _create_new_qubit_list(N, side_chain,
                            pauli_conf, pauli_contacts):
     """
-    Creates new set of contact qubits for second nearest neigbor
-    interactions. Note, the need of multiple interaction qubits
-    for each i,j pair.
+    Creates list of qubits consisting of the conformation
+    and contact qubits.
 
     Args:
         N: Number of total beads in peptide
@@ -525,7 +524,7 @@ def _create_new_qubit_list(N, side_chain,
         pauli_contacts: Dictionary of Pauli operators to track contacts between beads
 
     Returns:
-        new_qubits: Dictionary of qubits in symbolic notation
+        new_qubits: List of qubits in symbolic notation
     """
     old_qubits_conf = []
     old_qubits_contact = []
@@ -790,7 +789,7 @@ def _create_H_short(N, side_chain, pair_energies,
         indic_3: Turn indicator for axis 3
 
     Returns:
-        H_short: Contribution to energetic Hamiltonian in symbolic notation t
+        H_short: Contribution to energetic Hamiltonian in symbolic notation 
     """
     H_short = 0
     for i in range(1, N - 2):
@@ -848,6 +847,7 @@ def _create_mask_for_tensor(H, new_qubits):
                     mask[t, 0]= H.args[t].args[0] # coeff
                     mask[t, k]= 1
     mask[0, 0] = H.args[0]
+    print('Mask is {}'.format(mask))
     return mask
 
 def _make_pauli_list(N, side_chain,
@@ -870,6 +870,7 @@ def _build_qubit_op(N, side_chain, pair_energies,
     H_tot, pauli_conf, pauli_contacts, n_qubits, n_conf, n_contact, new_qubits = _get_symbolic_hamiltonian(N,side_chain,pair_energies,
                                                                                                            lambda_chiral,lambda_back,lambda_1,
                                                                                                            lambda_contacts,N_contacts)
+    print('new qubits: ', new_qubits)
     # generate list of Paulis
     pauli_list = _make_pauli_list(N, side_chain, H_tot, n_qubits, new_qubits)
     print('pauli_list: ', pauli_list)
